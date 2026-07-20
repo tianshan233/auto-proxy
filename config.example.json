@@ -1,0 +1,6 @@
+{
+  "subscription_url": "https://your-subscription-url?token=your_token",
+  "proxy_host": "127.0.0.1",
+  "proxy_port": 7890,
+  "mihomo_path": "auto"
+}
