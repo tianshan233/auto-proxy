@@ -4,6 +4,8 @@
 
 自动下载订阅配置 → 启动代理核心 → 设置系统代理 → 用完自动关闭。
 
+> **适用场景：** 为 AI 编码助手（[OpenCode](https://github.com/anomalyco/opencode)、[OpenClaw](https://github.com/anomalyco/openclaw) 等）提供自动网络代理。当 Agent 执行 `webfetch`、`winget install`、`git clone` 等操作遇到网络超时时，自动启动代理完成后关闭。
+
 ## 功能特点
 
 - **全自动**：一条命令搞定，从订阅到代理全流程自动化
