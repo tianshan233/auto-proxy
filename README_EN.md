@@ -13,6 +13,7 @@ Download subscription config → Start proxy core → Set system proxy → Auto 
 - **Smart Detection**: Automatically finds the latest Mihomo core on your system
 - **Cross-Tool Compatible**: Sets both system proxy and HTTP_PROXY environment variables — works for browsers and CLI tools
 - **Secure**: Disables LAN access by default (allow-lan: false)
+- **Process Guard**: Monitors proxy software and auto-cleans system proxy on exit — fixes the "close proxy → no internet" problem
 
 ## Prerequisites
 
@@ -87,6 +88,23 @@ Use when Clash is already running (e.g. via GUI). Only manages proxy on/off:
 | `disable` | Disable system proxy + clear env vars |
 | `status` | Check proxy status and port connectivity |
 | `test` | Test proxy connection |
+
+### proxy-guard.ps1 (Process Guard)
+
+Solves the classic problem: **close proxy GUI → system proxy still ON → dead port → no internet**.
+
+Monitors FlClash/Clash/Mihomo processes and auto-cleans system proxy when all proxy software exits.
+
+| Command | Description |
+|---------|-------------|
+| `watch` | Start guarding — monitor and auto-cleanup on exit (default) |
+| `now` | Force cleanup immediately (emergency fix) |
+| `status` | Show running proxy processes and proxy state |
+
+**Recommended:** Run it once after starting your proxy software:
+```batch
+powershell -File proxy-guard.ps1
+```
 
 ## Use Cases
 
