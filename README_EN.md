@@ -169,6 +169,7 @@ A: If the port is already in use (GUI running), the script only sets system prox
 - **Config File**: Generated as `mihomo-config.yaml` on first run
 - **PID File**: `mihomo.pid` (for process management)
 - **Security**: Default `allow-lan: false`, localhost only
+- **Registry Refresh**: Uses WinINet API to force-apply proxy changes immediately — no need to manually toggle LAN settings
 
 ## References
 

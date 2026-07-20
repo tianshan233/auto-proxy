@@ -40,6 +40,22 @@ if (Test-Path $configPath) {
 $proxyServer = "${proxyHost}:${proxyPort}"
 $regPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings"
 
+# WinINet P/Invoke — forces Windows to immediately apply proxy registry changes
+Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class WinInet {
+    public const int INTERNET_OPTION_SETTINGS_CHANGED = 39;
+    public const int INTERNET_OPTION_REFRESH = 37;
+    [DllImport("wininet.dll", SetLastError = true)]
+    public static extern bool InternetSetOption(IntPtr hInternet, int dwOption, IntPtr lpBuffer, int dwBufferLength);
+    public static void RefreshProxy() {
+        InternetSetOption(IntPtr.Zero, INTERNET_OPTION_SETTINGS_CHANGED, IntPtr.Zero, 0);
+        InternetSetOption(IntPtr.Zero, INTERNET_OPTION_REFRESH, IntPtr.Zero, 0);
+    }
+}
+"@
+
 # ============================================================================
 # FUNCTIONS
 # ============================================================================
@@ -64,6 +80,9 @@ function Enable-Proxy {
     Set-ItemProperty -Path $regPath -Name ProxyServer -Value $proxyServer | Out-Null
     Set-ItemProperty -Path $regPath -Name ProxyOverride -Value "localhost;127.*;10.*;172.16.*;172.17.*;172.18.*;172.19.*;172.20.*;172.21.*;172.22.*;172.23.*;172.24.*;172.25.*;172.26.*;172.27.*;172.28.*;172.29.*;172.30.*;172.31.*;192.168.*;<local>" | Out-Null
 
+    # Force Windows to apply registry changes immediately
+    [WinInet]::RefreshProxy()
+
     # Current process environment
     $env:HTTP_PROXY = "http://${proxyServer}"
     $env:HTTPS_PROXY = "http://${proxyServer}"
@@ -87,6 +106,9 @@ function Disable-Proxy {
 
     # Remove system proxy settings
     Set-ItemProperty -Path $regPath -Name ProxyEnable -Value 0 -Type DWord | Out-Null
+
+    # Force Windows to apply registry changes immediately
+    [WinInet]::RefreshProxy()
 
     # Clear environment variables
     Remove-Item Env:\HTTP_PROXY -ErrorAction SilentlyContinue
